@@ -1,0 +1,313 @@
+/* ==========================================================================
+   ОБЩИЕ СТИЛИ СТРАНИЦЫ И СТРУКТУРА ЭКРАНА (ФИКСИРУЕМ ИНТЕРФЕЙС)
+   ========================================================================== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #f4f6f9;
+  overflow: hidden; /* Запрещаем скролл всей страницы, скроллиться будет только таблица */
+  display: flex;
+  flex-direction: column;
+}
+ 
+h1 {
+  text-align: center;
+  color: #fff;
+  background-color: #1e293b; /* Графитово-синий */
+  margin: 0;
+  padding: 15px 0 5px 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+ 
+/* ==========================================================================
+   ВЕРХНЯЯ ПАНЕЛЬ С МЕНЮ И ФОРМАМИ
+   ========================================================================== */
+.header-wrapper {
+  width: 100%;
+  background-color: #1e293b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Шапка никогда не сжимается */
+}
+ 
+.main-header {
+  display: flex;
+  align-items: flex-end; /* Выравнивание элементов по нижнему краю */
+  justify-content: space-between;
+  padding: 10px 20px 15px 20px;
+  background-color: #1e293b;
+  gap: 20px;
+}
+ 
+.menu-container {
+  position: relative;
+  margin-bottom: 2px;
+}
+ 
+/* Кнопка сэндвич-меню */
+.burger-btn {
+  background-color: #334155;
+  color: #fff;
+  padding: 9px 16px;
+  font-size: 14px;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.burger-btn:hover { background-color: #475569; }
+ 
+/* Выпадающие вкладки меню */
+.burger-tabs {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+  z-index: 2100;
+  border-radius: 6px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+.burger-tabs.show { display: block; }
+.burger-tabs button {
+  color: #334155;
+  padding: 12px 16px;
+  display: block;
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+.burger-tabs button:hover { background-color: #f1f5f9; }
+.burger-tabs button.active { background-color: #3b82f6; color: #fff; }
+ 
+/* Контейнер для форм фильтрации */
+.forms-container {
+  display: flex;
+  gap: 25px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  color: #fff;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+ 
+#filterForm, #commentForm {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+ 
+.forms-container label {
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #cbd5e1;
+}
+ 
+.forms-container input[type="date"],
+#commentForm input[type="text"],
+#commentForm textarea {
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background-color: #fff;
+  color: #1e293b;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+ 
+#commentForm input[type="text"] { width: 120px; }
+#commentForm textarea {
+  width: 200px;
+  height: 34px;
+  resize: none;
+  padding-top: 6px;
+}
+ 
+/* Кнопки управления */
+.forms-container button, #commentForm button {
+  padding: 8px 16px;
+  background-color: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  height: 34px;
+  box-sizing: border-box;
+  transition: background 0.2s;
+}
+.forms-container button:hover, #commentForm button:hover { background-color: #059669; }
+ 
+#uploadBtn { background-color: #3b82f6; }
+#uploadBtn:hover { background-color: #2563eb; }
+ 
+.btn-back {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  align-self: flex-end;
+  margin-bottom: 8px;
+}
+.btn-back:hover { text-decoration: underline; }
+ 
+/* Блок Наличные/Безнал */
+#cashFilterContainer {
+  background-color: #f8fafc !important;
+  padding: 10px !important;
+  border-bottom: 1px solid #e2e8f0;
+}
+#cashFilterContainer label { color: #475569 !important; }
+ 
+/* ==========================================================================
+   ОСНОВНОЙ КОНТЕНТ (ЗДЕСЬ МЫ ОРГАНИЗУЕМ СКРОЛЛ ТАБЛИЦЫ)
+   ========================================================================== */
+#main-content {
+  flex: 1; /* Занимает всё оставшееся пространство экрана снизу */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Изолируем внутренние панели */
+}
+ 
+/* Панель вкладки (скроллится только она) */
+.tab-panel {
+  flex: 1;
+  overflow-y: auto; /* Включает независимую прокрутку внутри вкладки */
+  height: calc(100vh - 160px); /* Дает четкую высоту контейнеру, чтобы sticky понимал, где застыть */
+  padding: 0 20px;
+}
+ 
+/* ==========================================================================
+   СТИЛИ ДИНАМИЧЕСКОЙ ТАБЛИЦЫ И ЕЕ ШАПКИ
+   ========================================================================== */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  /* Закрепляем структуру */
+}
+ 
+/* Настройка стики-эффекта для заголовков ОБЕИХ таблиц */
+#transactionsTableNalog thead th,
+#transactionsTableCash thead th,
+/* Динамические th прилипнут прямо к верхнему краю вкладки */
+.styled-table thead th {
+  position: sticky !important;
+  top: 0 !important; /* Намертво фиксирует шапку таблицы */
+  z-index: 1500;
+  background-color: #ffffff !important; /* Белый фон полностью перекрывает строки под ним */
+  color: #1e293b;
+  font-weight: 600;
+  padding: 12px 10px;
+  border-bottom: 2px solid #e2e8f0;
+  box-shadow: inset 0 -1px 0 #e2e8f0;
+}
+ 
+ 
+ 
+/* Инпуты фильтров внутри таблицы */
+.styled-table thead th input,
+.styled-table thead th select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #334155;
+}
+ 
+.styled-table tbody td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  background-color: #fff;
+  color: #334155;
+}
+.styled-table tbody tr:nth-of-type(even) td { background-color: #f8fafc; }
+.styled-table tbody tr:hover td { background-color: #f1f5f9; }
+ 
+/* ==========================================================================
+   ПАНЕЛЬ ИТОГОВ
+   ========================================================================== */
+.totals-panel {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  margin-top: 25px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+ 
+.totals-panel h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+  color: #1e293b;
+  font-size: 16px;
+}
+ 
+.totals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+ 
+.total-item {
+  background: #f8fafc;
+  padding: 12px 15px;
+  border-left: 4px solid #3b82f6;
+  border-radius: 4px;
+}
+.total-item span { display: block; }
+.total-item .label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.total-item .value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e293b;
+}
+
+/* ==========================================================================
+          ВЫДЕЛЕНИЕ СТРОКИ ИТОГОВ (СТИЛИ ПЕРЕНЕСЕНЫ НА ЯЧЕЙКИ TD)
+   ========================================================================== */
+
+/* Красим фон, задаем шрифт и рамки для ВСЕХ ячеек в строке итогов */
+.styled-table tfoot .total-row td {
+  background-color: #f1f5f9 !important; /* Мягкий серо-синий фон встанет железно */
+  color: #1e293b !important;
+  font-weight: bold !important;
+  font-size: 15px; /* Чуть крупнее основного текста */
+  padding: 12px 10px;
+  border-top: 3px double #cbd5e1 !important; /* Двойная рамка сверху теперь отобразится */
+  border-bottom: 2px solid #94a3b8 !important; /* Граница снизу */
+}
+
+/* Первое ячейку со словом "ИТОГИ:" подсветим серым и сделаем капсом */
+.styled-table tfoot .total-row td:first-child {
+  color: #64748b !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
