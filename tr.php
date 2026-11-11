@@ -1,9 +1,8 @@
 ﻿<?php
 // Считываем дату из ссылки, если её нет — ставим сегодняшний день
-$passed_date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
+$passed_date = isset($_GET['date']) ? $_GET['date'] : date('Ymd');
 // Подстраховка для timestamp инпутов, если переменная не задана в config
 $startTimestamp = isset($startTimestamp) ? $startTimestamp : time();
-$current_date_formatted = date('Y-m-d', $startTimestamp);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -16,27 +15,6 @@ $current_date_formatted = date('Y-m-d', $startTimestamp);
   <meta charset="UTF-8" />
   <title>Операции на водомате</title>
   <link rel="stylesheet" href="/css/style_tr.css">
-  
-  <!-- Подключаем стили Flatpickr (Тема по умолчанию, можно менять) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <style>
-    /* Небольшие стили для адаптации нового инпута под CSS вашей формы */
-    .range-picker-wrapper {
-      display: inline-flex;
-      align-items: center;
-    }
-    .range-input-custom {
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      background: #fff;
-      cursor: pointer;
-      text-align: center;
-      min-width: 200px;
-    }
-  </style>
 </head>
 <body>
  
@@ -59,17 +37,12 @@ $current_date_formatted = date('Y-m-d', $startTimestamp);
       <!-- Первая форма -->
       <form id="filterForm">
         <a href="dashboard.php?date_filter=<?= htmlspecialchars($passed_date) ?>" class="btn-back">← Назад в панель управления</a>
-        
-        <!-- Новый объединенный красивый элемент -->
-        <div class="range-picker-wrapper">
-          <label for="dateRangePicker" style="margin-right: 5px;">Период:</label>
-          <input type="text" id="dateRangePicker" class="range-input-custom" placeholder="Выберите даты..." readonly />
-        </div>
-
-        <!-- Старые инпуты делаем скрытыми (hidden), чтобы js-скрипты не сломались -->
-        <input type="hidden" id="startDate" name="startDate" value="<?= $current_date_formatted ?>" />
-        <input type="hidden" id="endDate" name="endDate" value="<?= $current_date_formatted ?>" />
-        
+        <label>
+          С: <input type="date" id="startDate" name="startDate" value="<?= date('Ymd', $startTimestamp) ?>" required />
+        </label>
+        <label>
+          По: <input type="date" id="endDate" name="endDate" value="<?= date('Ymd', $startTimestamp) ?>" required />
+        </label>
         <button id="uploadBtn" type="button">Обновить транзакции</button>
         <button type="button" onclick="generateReport()">Показать отчет</button>
       </form>
@@ -114,43 +87,7 @@ $current_date_formatted = date('Y-m-d', $startTimestamp);
  
  
 <script src="/js/scripts_tr.js"></script>
-<!-- Подключение стилей Flatpickr -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<!-- Скрипты Flatpickr и русской локализации -->
-<!-- Основной скрипт Flatpickr -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<!-- Скрипт русской локализации -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
-
 <script>
-  // Инициализация календаря выбора диапазона
-document.addEventListener("DOMContentLoaded", function() {
-  const startInput = document.getElementById('startDate');
-  const endInput = document.getElementById('endDate');
-
-  flatpickr("#dateRangePicker", {
-    mode: "range",
-    dateFormat: "d.m.Y", // Формат вывода в инпуте: 01.11.2026
-    locale: "ru",
-    // Передаем начальные значения, если они есть в hidden-инпутах
-    defaultDate: [startInput.value, endInput.value], 
-    onChange: function(selectedDates, dateStr, instance) {
-      // Исправленная логика записи в hidden-поля:
-      if (selectedDates.length === 2) {
-        // Первая дата (Старт) в формате YYYY-MM-DD
-        startInput.value = instance.formatDate(selectedDates[0], "Y-m-d");
-        // Вторая дата (Конец) в формате YYYY-MM-DD
-        endInput.value = instance.formatDate(selectedDates[1], "Y-m-d");
-      } else if (selectedDates.length === 1) {
-        // Пока выбрана только одна дата, временно дублируем её в оба инпута
-        const singleDate = instance.formatDate(selectedDates[0], "Y-m-d");
-        startInput.value = singleDate;
-        endInput.value = singleDate;
-      }
-    }
-  });
-});
-
   function toggleMenu(event) {
     event.stopPropagation();
     const menu = document.getElementById('burgerMenu');
