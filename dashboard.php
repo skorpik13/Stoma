@@ -19,7 +19,7 @@ try {
 
 // 3. ОБРАБОТКА ВЫБОРА ДАТЫ (Календарь)
 // Если дата передана из формы фильтра — берем её, иначе ставим сегодняшний день
-$selected_date = isset($_GET['date_filter']) ? $_GET['date_filter'] : date('Y-m-d');
+$selected_date = isset($_GET['date_filter']) ? $_GET['date_filter'] : date('Ymd');
 
 // 4. ОБРАБОТКА ФОРМЫ РАСХОДОВ
 $expense_success = false;
@@ -211,7 +211,7 @@ $formatted_date = date('d.m.Y', strtotime($selected_date));
 
             <a href="generate_excel.php" class="menu-link" style="background: #ffc107; color: #333; font-weight: bold;">📂 Выгрузить отчет в XLS (Доходы/Расходы)</a>
 <!--            <a href="tr.php" class="menu-link" style="background: #007bff; color: white; font-weight: bold;">Посмотреть операции на терминале и водомате</a>-->
-<a href="tr.php?date=<?= $selected_date ?>" class="menu-link" style="background: #007bff; color: white; font-weight: bold;">Посмотреть операции на терминале и водомате</a>
+<a href="tr.php?date=<?= date('Ymd', strtotime($selected_date)) ?>" class="menu-link" style="background: #007bff; color: white; font-weight: bold;">Посмотреть операции на терминале и водомате</a>
 
         </div>
     </div>
