@@ -1,8 +1,14 @@
 ﻿<?php
-// Считываем дату из ссылки, если её нет — ставим сегодняшний день
-$passed_date = isset($_GET['date']) ? $_GET['date'] : date('Ymd');
-// Подстраховка для timestamp инпутов, если переменная не задана в config
-$startTimestamp = isset($startTimestamp) ? $startTimestamp : time();
+// Считываем дату из ссылки (ожидаем формат YYYYmmdd, например, 20260323)
+if (isset($_GET['date']) && strlen($_GET['date']) === 8 && is_numeric($_GET['date'])) {
+    $passed_date = $_GET['date']; // Сохраняем исходный вариант для кнопки «Назад»
+    // Форматируем в YYYY-MM-DD, чтобы инпуты типа date смогли её прочитать
+    $date_for_input = substr($passed_date, 0, 4) . '-' . substr($passed_date, 4, 2) . '-' . substr($passed_date, 6, 2);
+} else {
+    // Если даты нет или формат неверный — берем текущий день
+    $passed_date = date('Ymd');
+    $date_for_input = date('Y-m-d');
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -38,10 +44,10 @@ $startTimestamp = isset($startTimestamp) ? $startTimestamp : time();
       <form id="filterForm">
         <a href="dashboard.php?date_filter=<?= htmlspecialchars($passed_date) ?>" class="btn-back">← Назад в панель управления</a>
         <label>
-          С: <input type="date" id="startDate" name="startDate" value="<?= date('Ymd', $startTimestamp) ?>" required />
+          С: <input type="date" id="startDate" name="startDate" value="<?= $current_date_formatted ?>" required />
         </label>
         <label>
-          По: <input type="date" id="endDate" name="endDate" value="<?= date('Ymd', $startTimestamp) ?>" required />
+          По: <input type="date" id="endDate" name="endDate" value="<?= $current_date_formatted ?>" required />
         </label>
         <button id="uploadBtn" type="button">Обновить транзакции</button>
         <button type="button" onclick="generateReport()">Показать отчет</button>
